@@ -99,4 +99,22 @@ YIELD exists
 RETURN exists;
 
 // 2. Degree Centrality: centralidad de las casas
-//...
+
+CALL gds.degree.stream('halloween', {
+orientation: 'REVERSE'
+})
+YIELD nodeId, score
+WITH gds.util.asNode(nodeId) AS nodo, score
+WHERE 'Casa' IN labels(nodo)
+RETURN labels(nodo) AS etiquetas, nodo.direccion AS direccion, nodo.id AS id, score
+ORDER BY score DESC LIMIT 10;
+
+// Algoritmo en orientación natural, todos los puntajes dan 0
+CALL gds.degree.stream('halloween', {
+orientation: 'NATURAL'
+})
+YIELD nodeId, score
+WITH gds.util.asNode(nodeId) AS nodo, score
+WHERE 'Casa' IN labels(nodo)
+RETURN labels(nodo) AS etiquetas, nodo.direccion AS direccion, nodo.id AS id, score
+ORDER BY score DESC LIMIT 10;
