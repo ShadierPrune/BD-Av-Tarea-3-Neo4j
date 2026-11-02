@@ -13,7 +13,9 @@ ORDER BY cant_visitas DESC LIMIT 10;
 
 // 3. Estudiante con más dulces 
 
-
+MATCH (e:Estudiante)-[r:PIDIO_DULCES]->(:Casa)
+RETURN e.id, COUNT(r) AS cant_visitas, SUM(r.cantidad) AS cant_dulces
+ORDER BY cant_dulces DESC LIMIT 15;
 
 // 4. Visitas sin dulces
 
