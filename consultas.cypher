@@ -35,3 +35,68 @@ WHERE r.cantidad = 0
 WITH count(r) AS cant_visitas_sin_dulces, total //guarda las visitas sin dulces
 
 RETURN cant_visitas_sin_dulces,100*(cant_visitas_sin_dulces)/(total) AS Porcentaje;
+
+// Parte 2
+// 1. Proteccion de grafos
+// 1.1 Proyeccion de grafo (normal)
+
+CALL gds.graph.project(
+'halloween',
+['Estudiante', 'Casa'],
+{PIDIO_DULCES: {orientation: 'NATURAL'}}
+)
+YIELD graphName, nodeCount, relationshipCount
+RETURN graphName, nodeCount, relationshipCount;
+
+// 1.2 Proyeccion de grafo, pero con otra orientación
+
+CALL gds.graph.project(
+'halloween2',
+['Estudiante', 'Casa'],
+{PIDIO_DULCES: {orientation: 'UNDIRECTED'}}
+)
+YIELD graphName, nodeCount, relationshipCount
+RETURN graphName, nodeCount, relationshipCount;
+
+// 1.3 Proyeccion al reves
+CALL gds.graph.project(
+'halloween3',
+['Estudiante', 'Casa'],
+{PIDIO_DULCES: {orientation: 'REVERSE'}}
+)
+YIELD graphName, nodeCount, relationshipCount
+RETURN graphName, nodeCount, relationshipCount;
+
+// 1.4 Borrar proyecciones
+// 1.4.1 (no necesario) Borrar la primera proyeccion
+CALL gds.graph.drop('halloween', false)
+YIELD graphName
+RETURN graphName;
+
+// (no necesario) Confirmado que se borraron
+CALL gds.graph.exists('halloween')
+YIELD exists
+RETURN exists;
+
+// 1.4.2 Borrar la segunda proyeccion
+CALL gds.graph.drop('halloween2', false)
+YIELD graphName
+RETURN graphName;
+
+// Confirmando que se borró el otro
+CALL gds.graph.exists('halloween2')
+YIELD exists
+RETURN exists;
+
+// 1.4.3 Borrar la tercera proyeccion
+CALL gds.graph.drop('halloween3', false)
+YIELD graphName
+RETURN graphName;
+
+// Confirmando que se borró
+CALL gds.graph.exists('halloween3')
+YIELD exists
+RETURN exists;
+
+// 2. Degree Centrality: centralidad de las casas
+//...
