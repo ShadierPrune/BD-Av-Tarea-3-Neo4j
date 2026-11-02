@@ -21,7 +21,9 @@ ORDER BY cant_dulces DESC LIMIT 15;
 
 // 4.1 Query visitas sin dulces
 
-
+MATCH (e:Estudiante)-[r:PIDIO_DULCES]->(c:Casa)
+WHERE r.cantidad = 0
+RETURN e.id, c.direccion, r.tipo;
 
 // 4.2 Obteniendo la cantidad de visitas sin dulces y porcentaje con relación a todas las visitas
 
