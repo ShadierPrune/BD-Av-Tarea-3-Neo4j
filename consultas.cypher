@@ -118,3 +118,26 @@ WITH gds.util.asNode(nodeId) AS nodo, score
 WHERE 'Casa' IN labels(nodo)
 RETURN labels(nodo) AS etiquetas, nodo.direccion AS direccion, nodo.id AS id, score
 ORDER BY score DESC LIMIT 10;
+
+// Parte 3
+// 1.1 Casas compartidas (tabla)
+MATCH p = ((a:Estudiante{id:"Nicolás"})-[:PIDIO_DULCES]->(c:Casa)<-[:PIDIO_DULCES]-(b:Estudiante{id:"Valentina"}))
+RETURN c.direccion as Casas_compartidas_por_Nicolás_y_Valentina;
+
+// 1.2 Casas compartidas (grafo)
+MATCH p = ((e:Estudiante)-[:PIDIO_DULCES]->(c:Casa))
+WHERE e.id = "Nicolás" OR e.id = "Valentina"
+RETURN p
+
+// 2. Camino más corto
+MATCH (a:Estudiante {id: "Nicolás"}),(b:Estudiante {id: "Valentina"})
+OPTIONAL MATCH p = shortestPath(
+(a)-[:PIDIO_DULCES*1..24]-(b)
+)
+RETURN p, length(p) AS longitud, nodes(p) AS recorrido;
+
+// 2.1 Explicación Apoyo
+MATCH p = ((a:Estudiante{id:"Nicolás"})-[:PIDIO_DULCES]->(c:Casa)<-[:PIDIO_DULCES]-(b:Estudiante{id:"Valentina"}))
+RETURN elementId(c) AS ID_CASA,c.direccion as Casas_compartidas_por_Nicolás_y_Valentina
+ORDER BY ID_CASA ASC
+
