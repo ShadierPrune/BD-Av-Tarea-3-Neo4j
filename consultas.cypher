@@ -119,6 +119,31 @@ WHERE 'Casa' IN labels(nodo)
 RETURN labels(nodo) AS etiquetas, nodo.direccion AS direccion, nodo.id AS id, score
 ORDER BY score DESC LIMIT 10;
 
+// 3. Node Similarity: estudiantes con visitas parecidas
+
+// Parejas con mayor similitud
+CALL gds.nodeSimilarity.stream('halloween', {
+similarityMetric: 'JACCARD',
+topK: 14,
+similarityCutoff: 0.0001
+})
+YIELD node1, node2, similarity
+WHERE gds.util.asNode(node1).id < gds.util.asNode(node2).id
+RETURN gds.util.asNode(node1).id AS estudiante1,
+gds.util.asNode(node2).id AS estudiante2,
+similarity
+ORDER BY similarity DESC LIMIT 5;
+
+// Casas visitadas tanto por Martín como por Valentina
+MATCH (e1:Estudiante)-[:PIDIO_DULCES]->(c:Casa)<-[:PIDIO_DULCES]-(e2:Estudiante)
+WHERE e1.id = 'Matías' AND e2.id = 'Valentina'
+RETURN c.direccion AS direccion, c.id AS id;
+
+// Cantidad de casas visitadas por Martín y Valentina
+MATCH (e:Estudiante)-[v:PIDIO_DULCES]->(c:Casa)
+WHERE e.id IN ['Matías', 'Valentina']
+RETURN e.id AS nombre, COUNT(c) AS casas_visitadas;
+
 // Parte 3
 // 1.1 Casas compartidas (tabla)
 MATCH p = ((a:Estudiante{id:"Nicolás"})-[:PIDIO_DULCES]->(c:Casa)<-[:PIDIO_DULCES]-(b:Estudiante{id:"Valentina"}))
