@@ -34,7 +34,7 @@ MATCH (:Estudiante)-[r:PIDIO_DULCES]->(:Casa)
 WHERE r.cantidad = 0 
 WITH count(r) AS cant_visitas_sin_dulces, total //guarda las visitas sin dulces
 
-RETURN cant_visitas_sin_dulces,100*(cant_visitas_sin_dulces)/(total) AS Porcentaje;
+RETURN cant_visitas_sin_dulces,round(100*(cant_visitas_sin_dulces)/(total),2) AS Porcentaje;
 
 // Parte 2
 // 1. Proteccion de grafos
@@ -73,7 +73,7 @@ CALL gds.graph.drop('halloween', false)
 YIELD graphName
 RETURN graphName;
 
-// (no necesario) Confirmado que se borraron
+// 1.4.1.1 (no necesario) Confirmado que se borraron
 CALL gds.graph.exists('halloween')
 YIELD exists
 RETURN exists;
@@ -83,7 +83,7 @@ CALL gds.graph.drop('halloween2', false)
 YIELD graphName
 RETURN graphName;
 
-// Confirmando que se borró el otro
+// 1.4.2.1 Confirmando que se borró la proyección 2
 CALL gds.graph.exists('halloween2')
 YIELD exists
 RETURN exists;
@@ -93,7 +93,7 @@ CALL gds.graph.drop('halloween3', false)
 YIELD graphName
 RETURN graphName;
 
-// Confirmando que se borró
+// 1.4.3.1 Confirmando que se borró la tercera proyección
 CALL gds.graph.exists('halloween3')
 YIELD exists
 RETURN exists;
